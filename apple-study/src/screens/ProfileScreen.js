@@ -3,22 +3,34 @@ import { View, Pressable, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme, T, shadow } from '../theme';
-import { Screen, Card, IconBtn, Bar, Row, tap } from '../components/ui';
+import { Screen, Card, IconBtn, Bar, Row, Segmented, Btn, tap } from '../components/ui';
 import Icon from '../components/Icon';
-import Apple from '../components/Apple';
+import Apple, { AppleSvg } from '../components/Apple';
 import { useStore, APPLE_COLORS } from '../store';
 import { computeStats, moodOf, moodMessage, levelTitle } from '../logic';
 import { dur } from '../utils/date';
 
-export const ACCESSORIES = [
-  { k: '', e: '🚫', label: 'None' },
-  { k: 'glasses', e: '👓', label: 'Glasses' },
-  { k: 'grad', e: '🎓', label: 'Grad cap' },
-  { k: 'headphones', e: '🎧', label: 'Headphones' },
-  { k: 'bow', e: '🎀', label: 'Bow' },
-  { k: 'cap', e: '🧢', label: 'Cap' },
-  { k: 'crown', e: '👑', label: 'Crown', level: 5 },
-];
+// Wardrobe: head items and face items can be combined. `level` = unlock level.
+export const WARDROBE = {
+  head: [
+    { k: '', e: '🚫', label: 'None' },
+    { k: 'cap', e: '🧢', label: 'Cap' },
+    { k: 'bow', e: '🎀', label: 'Bow' },
+    { k: 'headphones', e: '🎧', label: 'Headphones' },
+    { k: 'grad', e: '🎓', label: 'Grad cap', level: 2 },
+    { k: 'flower', e: '🌸', label: 'Flowers', level: 2 },
+    { k: 'beanie', e: '🧶', label: 'Beanie', level: 3 },
+    { k: 'star', e: '⭐', label: 'Star clip', level: 4 },
+    { k: 'crown', e: '👑', label: 'Crown', level: 5 },
+    { k: 'halo', e: '😇', label: 'Halo', level: 7 },
+  ],
+  face: [
+    { k: '', e: '🚫', label: 'None' },
+    { k: 'glasses', e: '👓', label: 'Glasses' },
+    { k: 'sunglasses', e: '🕶️', label: 'Shades', level: 3 },
+  ],
+};
+
 
 const MOOD_GUIDE = [
   ['excited', '🤩', 'Dancing', '4+ things done or 2h focused today'],
@@ -38,6 +50,7 @@ export default function ProfileScreen() {
   const todos = useStore((s) => s.todos);
   const sessions = useStore((s) => s.sessions);
   const [preview, setPreview] = useState(null);
+  const [slot, setSlot] = useState('head');
 
   const st = useMemo(() => computeStats({ tasks, todos, sessions }), [tasks, todos, sessions]);
   const realMood = moodOf(st);
@@ -76,7 +89,7 @@ export default function ProfileScreen() {
               <T size={14} style={{ position: 'absolute', bottom: 74, left: 40 }}>⭐</T>
             </>
           )}
-          <Apple mood={mood} size={176} color={profile.color} accessory={profile.accessory} />
+          <Apple mood={mood} size={176} color={profile.color} accessory={profile.accessory} face={profile.face} />
           <View style={[{ backgroundColor: c.card, borderRadius: 16, paddingHorizontal: 14, paddingVertical: 8, marginTop: -4 }, shadow(c)]}>
             <T w={600} size={13}>
               {msg.bubble}
@@ -144,31 +157,84 @@ export default function ProfileScreen() {
           />
         ))}
       </Row>
-      <T w={600} size={11} muted style={{ marginTop: 14, letterSpacing: 0.6 }}>
-        ACCESSORY
-      </T>
-      <Row gap={10} style={{ marginTop: 8, flexWrap: 'wrap' }}>
-        {ACCESSORIES.map((a) => {
-          const locked = a.level && st.level < a.level;
-          const on = (profile.accessory || '') === a.k;
+      <Row between style={{ marginTop: 16 }}>
+        <T w={600} size={11} muted style={{ letterSpacing: 0.6 }}>
+          WARDROBE
+        </T>
+        <T w={600} size={11} color={c.p}>
+          {[...WARDROBE.head, ...WARDROBE.face].filter((a) => a.k && !(a.level > st.level)).length}/
+          {WARDROBE.head.length + WARDROBE.face.length - 2} unlocked
+        </T>
+      </Row>
+      <Segmented
+        style={{ marginTop: 8 }}
+        value={slot}
+        onChange={setSlot}
+        options={[
+          { value: 'head', label: '🎩 Head' },
+          { value: 'face', label: '👓 Face' },
+        ]}
+      />
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12, marginTop: 12 }}>
+        {WARDROBE[slot].map((a) => {
+          const locked = a.level > st.level;
+          const key = slot === 'head' ? 'accessory' : 'face';
+          const on = (profile[key] || '') === a.k;
           return (
             <Pressable
               key={a.label}
               onPress={() => {
-                if (locked) return Alert.alert('Locked 🔒', `Reach level ${a.level} to unlock the ${a.label}!`);
+                if (locked) return Alert.alert('Locked 🔒', `Reach level ${a.level} to unlock the ${a.label}! Finish tasks and focus sessions to earn XP.`);
                 tap();
-                setProfile({ accessory: a.k });
+                setProfile({ [key]: a.k });
               }}
               style={[
-                { width: 46, height: 46, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: on ? c.soft : c.card, borderWidth: 2, borderColor: on ? c.p : 'transparent', opacity: locked ? 0.45 : 1 },
+                { width: '31.5%', borderRadius: 18, paddingTop: 8, paddingBottom: 8, alignItems: 'center', backgroundColor: on ? c.soft : c.card, borderWidth: 2, borderColor: on ? c.p : 'transparent' },
                 shadow(c),
               ]}
             >
-              <T size={20}>{locked ? '🔒' : a.e}</T>
+              <View style={{ opacity: locked ? 0.35 : 1 }}>
+                <AppleSvg
+                  mood="happy"
+                  size={70}
+                  color={profile.color}
+                  accessory={slot === 'head' ? a.k : profile.accessory}
+                  face={slot === 'face' ? a.k : profile.face}
+                />
+              </View>
+              {locked && (
+                <View style={{ position: 'absolute', top: 26, alignSelf: 'center', backgroundColor: c.dark ? '#000a' : '#2A1A1Dcc', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 }}>
+                  <T w={700} size={11} color="#fff">
+                    🔒 Lv {a.level}
+                  </T>
+                </View>
+              )}
+              <T w={600} size={11} color={on ? c.p : locked ? c.muted : c.text} style={{ marginTop: 2 }}>
+                {a.e} {a.label}
+              </T>
+              {on && (
+                <View style={{ position: 'absolute', top: 6, right: 6, width: 18, height: 18, borderRadius: 9, backgroundColor: c.p, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="check" size={11} color="#fff" width={3.2} />
+                </View>
+              )}
             </Pressable>
           );
         })}
-      </Row>
+      </View>
+      <Btn
+        small
+        outline
+        title="🎲 Surprise me — random outfit"
+        style={{ marginTop: 12 }}
+        onPress={() => {
+          const pick = (list) => {
+            const ok = list.filter((a) => !(a.level > st.level));
+            return ok[Math.floor(Math.random() * ok.length)].k;
+          };
+          const colors = Object.keys(APPLE_COLORS);
+          setProfile({ accessory: pick(WARDROBE.head), face: pick(WARDROBE.face), color: colors[Math.floor(Math.random() * colors.length)] });
+        }}
+      />
 
       <T w={700} size={16} style={{ marginTop: 22 }}>
         How {profile.buddyName} feels

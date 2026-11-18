@@ -35,7 +35,7 @@ export default function EditNamesScreen() {
         Shown in “Hey, {name || 'you'} 👋” and greetings
       </T>
       <Row gap={14} style={{ marginTop: 16 }}>
-        <Apple mood="happy" size={64} color={profile.color} accessory={profile.accessory} />
+        <Apple mood="happy" size={64} color={profile.color} accessory={profile.accessory} face={profile.face} />
         <View style={{ flex: 1 }}>
           <Label style={{ marginTop: 0 }}>BUDDY NAME</Label>
           <Field placeholder="Appy" value={buddy} onChangeText={setBuddy} />

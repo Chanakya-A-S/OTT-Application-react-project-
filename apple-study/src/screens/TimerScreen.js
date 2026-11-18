@@ -261,7 +261,7 @@ export default function TimerScreen() {
       <View style={{ width: SIZE, height: SIZE, alignSelf: 'center', marginTop: 4, alignItems: 'center', justifyContent: 'center' }}>
         <Dial progress={progress} color1={isBreak ? '#3DBE8B' : c.p} color2={isBreak ? '#8BE0B9' : c.p2} track={c.soft} tick={c.muted} />
         <View style={[{ width: 166, height: 166, borderRadius: 83, backgroundColor: c.card, alignItems: 'center', justifyContent: 'center' }, shadow(c)]}>
-          <Apple mood={mood} size={46} color={profile.color} accessory={timer.running && !isBreak ? 'headphones' : profile.accessory} />
+          <Apple mood={mood} size={46} color={profile.color} accessory={timer.running && !isBreak ? 'headphones' : profile.accessory} face={profile.face} />
           <T w={700} size={36} style={{ letterSpacing: -1, marginTop: 2 }}>
             {clock(remaining != null ? Math.max(remaining, 0) : elapsed)}
           </T>

@@ -136,7 +136,7 @@ export default function Celebration() {
             ],
           }}
         >
-          <Apple mood="excited" size={190} accessory="grad" color={profile.color} interactive={false} />
+          <Apple mood="excited" size={190} accessory="grad" face={profile.face} color={profile.color} interactive={false} />
         </Animated.View>
         <Animated.View
           style={{

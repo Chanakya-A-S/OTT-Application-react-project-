@@ -75,6 +75,35 @@ export function computeStats({ tasks, todos, sessions }) {
   };
 }
 
+const QUOTES = [
+  'Small steps every day add up to big results. 🌱',
+  'You don’t have to be perfect, just consistent. ✨',
+  'One page at a time — you’ve got this! 📖',
+  'Future you will thank you for studying today. 💌',
+  'Focus on progress, not perfection. 🍎',
+  'A little bit of studying is better than none. ⏱️',
+  'Your brain is a muscle — let’s train it! 💪',
+  'Mistakes mean you’re learning. Keep going! 🌈',
+  'Start with just 25 minutes. That’s all. 🍅',
+  'Dream big, study smart, rest well. 🌙',
+  'Every expert was once a beginner. 🌟',
+  'Believe you can and you’re halfway there. 🚀',
+  'Discipline beats motivation on lazy days. 🔥',
+  'Learn something today that makes tomorrow easier. 🧠',
+  'Done is better than perfect. Finish one task! ✅',
+  'Breaks are part of the plan — rest, then return. ☕',
+  'Your only competition is yesterday’s you. 🏆',
+  'Hard work today, proud smile tomorrow. 😊',
+  'Turn “I can’t” into “I’m learning”. 🌻',
+  'Keep calm and revise on. 📚',
+];
+/** Same quote all day, changes every day. */
+export const dailyQuote = () => {
+  const d = new Date();
+  const n = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate();
+  return QUOTES[n % QUOTES.length];
+};
+
 export const LEVEL_TITLES = ['Seedling', 'Sprout', 'Sapling', 'Learner', 'Achiever', 'Scholar', 'Scholar', 'Expert', 'Expert', 'Master', 'Genius'];
 export const levelTitle = (lv) => LEVEL_TITLES[Math.min(lv - 1, LEVEL_TITLES.length - 1)];
 

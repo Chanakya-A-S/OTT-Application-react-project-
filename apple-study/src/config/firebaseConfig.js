@@ -6,12 +6,12 @@
  * While apiKey is empty the app runs in offline mode (data stays on the phone).
  */
 export const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: '',
+  apiKey: 'AIzaSyB1UwxpEXxE3isN6FpnwLCI36W6Ea3IEH4',
+  authDomain: 'apple-study-aa789b.firebaseapp.com',
+  projectId: 'apple-study-aa789b',
+  storageBucket: 'apple-study-aa789b.firebasestorage.app',
+  messagingSenderId: '115151837873',
+  appId: '1:115151837873:web:8ce7ee65b41eba4d702090',
 };
 
 /**

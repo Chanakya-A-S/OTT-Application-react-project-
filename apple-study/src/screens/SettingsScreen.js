@@ -188,7 +188,7 @@ export default function SettingsScreen() {
         </Pressable>
       </Card>
       <T size={11} muted center style={{ marginTop: 20 }}>
-        APPLE-STUDY v1.0 · made with 🍎 for Chan &amp; Subha
+        APPLE-STUDY v1.1 · made with 🍎 for Chan &amp; Subha
       </T>
     </Screen>
   );

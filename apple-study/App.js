@@ -40,6 +40,8 @@ import BlockEditorScreen from './src/screens/BlockEditorScreen';
 import EditNamesScreen from './src/screens/EditNamesScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import RemindersScreen from './src/screens/RemindersScreen';
+import StatsScreen from './src/screens/StatsScreen';
+import ExamsScreen, { ExamEditorScreen } from './src/screens/ExamsScreen';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -92,6 +94,9 @@ function Root() {
             <Stack.Screen name="NoteEditor" component={NoteEditorScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
             <Stack.Screen name="Reminders" component={RemindersScreen} />
+            <Stack.Screen name="Stats" component={StatsScreen} />
+            <Stack.Screen name="Exams" component={ExamsScreen} />
+            <Stack.Screen name="ExamEditor" component={ExamEditorScreen} options={sheet} />
             <Stack.Screen name="TaskEditor" component={TaskEditorScreen} options={sheet} />
             <Stack.Screen name="BlockEditor" component={BlockEditorScreen} options={sheet} />
             <Stack.Screen name="EditNames" component={EditNamesScreen} options={sheet} />
@@ -119,7 +124,7 @@ function useNotificationWiring(ready) {
     };
     run();
     const unsub = useStore.subscribe((s, prev) => {
-      if (s.tasks !== prev.tasks || s.settings !== prev.settings || s.profile !== prev.profile || s.sessions !== prev.sessions || s.todos !== prev.todos) run();
+      if (s.tasks !== prev.tasks || s.settings !== prev.settings || s.profile !== prev.profile || s.sessions !== prev.sessions || s.todos !== prev.todos || s.exams !== prev.exams) run();
     });
 
     const handle = (resp) => {

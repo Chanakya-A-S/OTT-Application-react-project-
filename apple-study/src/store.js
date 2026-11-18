@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { uid, dateKey } from './utils/date';
 
-export const SYNCED = ['subjects', 'tasks', 'todos', 'notes', 'sessions', 'blocks'];
+export const SYNCED = ['subjects', 'tasks', 'todos', 'notes', 'sessions', 'blocks', 'exams'];
 
 export const DEFAULT_SUBJECTS = [
   { id: 'maths', name: 'Maths', color: '#5B8DEF', emoji: '📐' },
@@ -23,13 +23,14 @@ export const APPLE_COLORS = {
 };
 
 const initialData = () => ({
-  profile: { userName: '', buddyName: 'Appy', color: 'red', accessory: 'glasses', onboarded: false, updatedAt: 0 },
+  profile: { userName: '', buddyName: 'Appy', color: 'red', accessory: '', face: 'glasses', onboarded: false, updatedAt: 0 },
   subjects: DEFAULT_SUBJECTS,
   tasks: [],
   todos: [],
   notes: [],
   sessions: [],
   blocks: [],
+  exams: [],
   timer: { mode: 'focus', running: false, startedAt: null, accumulated: 0, subjectId: 'maths', taskId: null, round: 1 },
 });
 
@@ -137,6 +138,12 @@ export const useStore = create(
         return Object.fromEntries(Object.entries(rest).filter(([, v]) => typeof v !== 'function'));
       },
       onRehydrateStorage: () => () => {
+        // v1.0 had one accessory slot; glasses now live in the separate face slot.
+        const p = useStore.getState().profile;
+        if (p && p.face === undefined) {
+          const isFace = ['glasses', 'sunglasses'].includes(p.accessory);
+          useStore.setState({ profile: { ...p, face: isFace ? p.accessory : '', accessory: isFace ? '' : p.accessory || '' } });
+        }
         useStore.setState({ hydrated: true });
       },
     }

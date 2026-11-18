@@ -50,7 +50,7 @@ export default function OnboardingScreen() {
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1, backgroundColor: c.bg }}>
       <ScrollView contentContainerStyle={{ padding: 24, paddingTop: insets.top + 30, paddingBottom: insets.bottom + 30 }} keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'center' }}>
-          <Apple mood="excited" size={150} color={color} accessory="glasses" />
+          <Apple mood="excited" size={150} color={color} face="glasses" />
           <T w={700} size={24} center style={{ marginTop: 10 }}>
             Let’s get to know you!
           </T>

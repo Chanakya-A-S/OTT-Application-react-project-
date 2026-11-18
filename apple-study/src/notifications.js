@@ -54,11 +54,11 @@ export function rescheduleAll(state) {
   return running;
 }
 
-async function doReschedule({ tasks, subjects, settings, profile, activeToday }) {
+async function doReschedule({ tasks, subjects, settings, profile, activeToday, exams = [] }) {
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
   await Promise.all(
     scheduled
-      .filter((n) => n.identifier.startsWith('task-') || n.identifier.startsWith('nudge-'))
+      .filter((n) => n.identifier.startsWith('task-') || n.identifier.startsWith('nudge-') || n.identifier.startsWith('exam-'))
       .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier))
   );
   const perm = await Notifications.getPermissionsAsync();
@@ -86,6 +86,28 @@ async function doReschedule({ tasks, subjects, settings, profile, activeToday })
         const d = parseKey(t.date);
         d.setHours(hour, minute, 0, 0);
         if (d.getTime() > now) await sched('o', { type: TT.DATE, date: d });
+      }
+    }
+  }
+
+  if (settings.reminders) {
+    for (const e of live(exams)) {
+      const s = subjectOf(subjects, e.subjectId);
+      const eve = parseKey(addDays(e.date, -1));
+      eve.setHours(18, 0, 0, 0);
+      const morn = parseKey(e.date);
+      morn.setHours(7, 30, 0, 0);
+      const items = [
+        [eve, `📅 ${e.title} is tomorrow!`, `Quick revision tonight? ${buddy} believes in you 🍎`, 'eve'],
+        [morn, `🍀 ${e.title} today — good luck!`, `You’ve prepared for this. ${buddy} is cheering for you 💪`, 'day'],
+      ];
+      for (const [d, title, body, k] of items) {
+        if (d.getTime() <= now) continue;
+        await Notifications.scheduleNotificationAsync({
+          identifier: `exam-${e.id}-${k}`,
+          content: { title, body, sound: 'default', data: { kind: 'exam', subject: s.name } },
+          trigger: { type: TT.DATE, date: d, channelId: CH },
+        });
       }
     }
   }

@@ -82,6 +82,19 @@ function Eyes({ mood, blink }) {
   );
 }
 
+function starPath(cx, cy, R, r) {
+  let d = '';
+  for (let i = 0; i < 10; i++) {
+    const rad = i % 2 ? r : R;
+    const a = (Math.PI / 5) * i - Math.PI / 2;
+    d += (i ? 'L' : 'M') + (cx + rad * Math.cos(a)).toFixed(1) + ' ' + (cy + rad * Math.sin(a)).toFixed(1);
+  }
+  return d + 'Z';
+}
+
+/** Items worn on the face; everything else goes on the head. */
+export const FACE_ITEMS = ['glasses', 'sunglasses'];
+
 function Accessory({ name }) {
   switch (name) {
     case 'glasses':
@@ -130,12 +143,58 @@ function Accessory({ name }) {
           <Circle cx={100} cy={40} r={4} fill="#E8434B" />
         </G>
       );
+    case 'sunglasses':
+      return (
+        <G>
+          <Rect x={54} y={96} width={42} height={28} rx={12} fill="#1E1A24" />
+          <Rect x={104} y={96} width={42} height={28} rx={12} fill="#1E1A24" />
+          <Path d="M96 105h8M54 104l-12-5M146 104l12-5" stroke="#1E1A24" strokeWidth={4} strokeLinecap="round" />
+          <Path d="M62 103l12-2M112 103l12-2" stroke="#fff" strokeWidth={3} strokeLinecap="round" opacity={0.55} />
+        </G>
+      );
+    case 'beanie':
+      return (
+        <G>
+          <Path d="M42 78Q44 24 100 22Q156 24 158 78Z" fill="#E86A92" />
+          <Path d="M70 32v38M100 24v46M130 32v38" stroke="#D24F7A" strokeWidth={3} opacity={0.6} />
+          <Rect x={36} y={64} width={128} height={22} rx={11} fill="#C93F6C" />
+          <Circle cx={100} cy={18} r={13} fill="#FFF3F6" />
+        </G>
+      );
+    case 'flower':
+      return (
+        <G>
+          {[0, 72, 144, 216, 288].map((a) => (
+            <Circle key={a} cx={60 + 10 * Math.cos((a * Math.PI) / 180)} cy={50 + 10 * Math.sin((a * Math.PI) / 180)} r={8} fill="#FF8FB8" />
+          ))}
+          <Circle cx={60} cy={50} r={6} fill="#FFD34E" />
+          {[0, 90, 180, 270].map((a) => (
+            <Circle key={'b' + a} cx={140 + 7 * Math.cos((a * Math.PI) / 180)} cy={56 + 7 * Math.sin((a * Math.PI) / 180)} r={5.5} fill="#B9A0FF" />
+          ))}
+          <Circle cx={140} cy={56} r={4} fill="#FFD34E" />
+          <Path d="M44 64q18-10 34-12M122 58q12 2 30 10" stroke="#4CAF50" strokeWidth={3} fill="none" strokeLinecap="round" />
+        </G>
+      );
+    case 'star':
+      return (
+        <G>
+          <Path d={starPath(146, 62, 16, 7)} fill="#FFC93C" stroke="#E0A400" strokeWidth={2} strokeLinejoin="round" />
+          <Circle cx={141} cy={58} r={2.5} fill="#fff" opacity={0.8} />
+        </G>
+      );
+    case 'halo':
+      return (
+        <G>
+          <Ellipse cx={100} cy={16} rx={46} ry={10} fill="none" stroke="#FFE38A" strokeWidth={9} opacity={0.5} />
+          <Ellipse cx={100} cy={16} rx={46} ry={10} fill="none" stroke="#FFC93C" strokeWidth={5} />
+        </G>
+      );
     default:
       return null;
   }
 }
 
-export function AppleSvg({ mood = 'happy', size = 120, accessory, color = 'red', blink }) {
+export function AppleSvg({ mood = 'happy', size = 120, accessory, face, color = 'red', blink }) {
   const idRef = useRef(null);
   if (idRef.current === null) idRef.current = 'ap' + counter++;
   const id = idRef.current;
@@ -166,13 +225,14 @@ export function AppleSvg({ mood = 'happy', size = 120, accessory, color = 'red',
       <Ellipse cx={66} cy={132} rx={11} ry={6} fill="#FF6B7A" opacity={0.55} />
       <Ellipse cx={134} cy={132} rx={11} ry={6} fill="#FF6B7A" opacity={0.55} />
       <Eyes mood={mood} blink={blink} />
+      <Accessory name={face} />
       <Accessory name={accessory} />
     </Svg>
   );
 }
 
 /** Animated buddy: idles according to mood, blinks, jumps when tapped. */
-export default function Apple({ mood = 'happy', size = 120, accessory, color, animate = true, onPress, interactive = true }) {
+export default function Apple({ mood = 'happy', size = 120, accessory, face, color, animate = true, onPress, interactive = true }) {
   const loop = useRef(new Animated.Value(0)).current;
   const jump = useRef(new Animated.Value(0)).current;
   const [blink, setBlink] = useState(false);
@@ -228,7 +288,7 @@ export default function Apple({ mood = 'happy', size = 120, accessory, color, an
 
   const body = (
     <Animated.View style={{ transform: [{ translateY }, { rotate }, { rotate: spin }, { scaleY }] }}>
-      <AppleSvg mood={mood} size={size} accessory={accessory} color={color} blink={blink} />
+      <AppleSvg mood={mood} size={size} accessory={accessory} face={face} color={color} blink={blink} />
     </Animated.View>
   );
   if (!interactive) return body;

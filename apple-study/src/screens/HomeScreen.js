@@ -7,7 +7,8 @@ import Icon from '../components/Icon';
 import Apple from '../components/Apple';
 import HeartModal from '../components/HeartModal';
 import { useStore, live, subjectOf } from '../store';
-import { computeStats, moodOf, moodMessage, isDone } from '../logic';
+import { computeStats, moodOf, moodMessage, isDone, dailyQuote } from '../logic';
+import { upcomingExams, daysLeftLabel } from './ExamsScreen';
 import { longDate, hm, dur, nowMin } from '../utils/date';
 
 function HeartButton({ onPress }) {
@@ -55,6 +56,8 @@ export default function HomeScreen() {
   const subjects = useStore((s) => s.subjects);
   const profile = useStore((s) => s.profile);
   const toggleTask = useStore((s) => s.toggleTask);
+  const exams = useStore((s) => s.exams);
+  const nextExams = useMemo(() => upcomingExams(exams), [exams]);
 
   const st = useMemo(() => computeStats({ tasks, todos, sessions }), [tasks, todos, sessions]);
   const mood = moodOf(st);
@@ -99,7 +102,7 @@ export default function HomeScreen() {
 
       <Pressable onPress={() => nav.navigate('Profile')}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 14, padding: 12, paddingRight: 16, borderRadius: 22, backgroundColor: c.soft }}>
-          <Apple mood={mood} size={64} color={profile.color} accessory={profile.accessory} />
+          <Apple mood={mood} size={64} color={profile.color} accessory={profile.accessory} face={profile.face} />
           <View style={{ flex: 1 }}>
             <T w={700} size={15}>
               {msg.title}
@@ -113,6 +116,31 @@ export default function HomeScreen() {
           </View>
         </View>
       </Pressable>
+
+      {nextExams.length > 0 && (
+        <Pressable onPress={() => nav.navigate('Exams')}>
+          <View style={[{ marginTop: 14, borderRadius: 20, backgroundColor: c.card, padding: 12, flexDirection: 'row', alignItems: 'center', gap: 12 }, shadow(c)]}>
+            <View style={{ width: 50, height: 50, borderRadius: 16, backgroundColor: nextExams[0].left <= 3 ? c.p : c.soft, alignItems: 'center', justifyContent: 'center' }}>
+              <T w={800} size={18} color={nextExams[0].left <= 3 ? '#fff' : c.p}>
+                {nextExams[0].left === 0 ? '🔥' : nextExams[0].left}
+              </T>
+            </View>
+            <View style={{ flex: 1 }}>
+              <T w={500} size={11} muted>
+                📅 Next exam{nextExams.length > 1 ? ` · +${nextExams.length - 1} more` : ''}
+              </T>
+              <T w={700} size={14} numberOfLines={1}>
+                {nextExams[0].title}
+              </T>
+              <T w={600} size={11} color={c.p}>
+                {daysLeftLabel(nextExams[0].left)}
+                {nextExams[0].left > 1 ? ' to go' : ''}
+              </T>
+            </View>
+            <Icon name="chev" size={18} color={c.muted} />
+          </View>
+        </Pressable>
+      )}
 
       <Row between style={{ marginTop: 20 }}>
         <Row gap={8}>
@@ -242,6 +270,44 @@ export default function HomeScreen() {
             </T>
           </View>
         </Card>
+      </View>
+
+      <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
+        <Card style={{ flex: 1, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }} onPress={() => nav.navigate('Stats')}>
+          <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#9B7BEA22', alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="chart" size={18} color="#9B7BEA" />
+          </View>
+          <View>
+            <T w={700} size={14}>
+              Stats
+            </T>
+            <T size={11} muted>
+              your week
+            </T>
+          </View>
+        </Card>
+        <Card style={{ flex: 1, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }} onPress={() => nav.navigate('Exams')}>
+          <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#F5A62322', alignItems: 'center', justifyContent: 'center' }}>
+            <T size={18}>📅</T>
+          </View>
+          <View>
+            <T w={700} size={14}>
+              Exams
+            </T>
+            <T size={11} muted>
+              {nextExams.length ? `${nextExams.length} upcoming` : 'add dates'}
+            </T>
+          </View>
+        </Card>
+      </View>
+
+      <View style={{ marginTop: 16, padding: 16, borderRadius: 20, borderWidth: 1.5, borderStyle: 'dashed', borderColor: c.line }}>
+        <T w={600} size={11} color={c.p} style={{ letterSpacing: 0.6 }}>
+          💬 {profile.buddyName.toUpperCase()} SAYS
+        </T>
+        <T w={500} size={14} style={{ marginTop: 4, lineHeight: 21 }}>
+          {dailyQuote()}
+        </T>
       </View>
 
       <HeartModal visible={heart} onClose={() => setHeart(false)} />

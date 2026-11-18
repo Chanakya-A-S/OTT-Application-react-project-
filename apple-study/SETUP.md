@@ -1,5 +1,9 @@
 # 🍎 APPLE-STUDY — setup guide
 
+> ✅ **Already done for this app:** Firebase project `apple-study-aa789b` exists, the Firestore database (asia-south1)
+> and security rules are live, and the keys are in `src/config/firebaseConfig.js`.
+> **Only remaining step:** Firebase console → *Authentication* → **Get started** → *Sign-in method* → **Email/Password** → Enable → Save.
+
 The app works **offline out of the box** (data saved on the phone).
 Follow steps 1–3 once to switch on **accounts + cloud sync** (free Firebase "Spark" plan is enough).
 
