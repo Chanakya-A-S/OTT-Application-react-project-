@@ -121,7 +121,7 @@ export default function HeartModal({ visible, onClose }) {
             </T>
           </View>
           <T w={500} size={14} color="#9C8B8E" style={{ marginTop: 6 }}>
-            forever study buddies 🍎🍎
+            Chan says! I Love You 💖
           </T>
           <Btn title="Aww, close 💕" onPress={onClose} style={{ marginTop: 20, width: 200 }} />
         </Animated.View>
