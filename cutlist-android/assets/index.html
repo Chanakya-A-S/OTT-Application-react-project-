@@ -1,0 +1,316 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Cutlist Client Desk</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: editor's timeline desk — money strip on top, one row per job like clips on a track, slide-in panel for editing */
+:root{
+  --bg:#f3f4f6; --panel:#ffffff; --line:#dfe2e8; --fg:#161a22; --muted:#5d6574;
+  --accent:#2f5bea; --accent-ink:#ffffff; --accent-soft:#e6ecfd;
+  --ok:#17803d; --ok-soft:#e2f4e8; --warn:#a85d00; --warn-soft:#fdf0dc; --bad:#c02b2b; --bad-soft:#fbe5e5;
+  --st-edit:#7a4fd6; --st-review:#c27a00; --st-done:#17803d; --st-new:#5d6574;
+  --display:"Archivo",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1218; --panel:#171b23; --line:#2a303c; --fg:#e8ebf1; --muted:#98a0b0;
+  --accent:#6f8dff; --accent-ink:#0b0f1a; --accent-soft:#1f2a4d;
+  --ok:#4cc77a; --ok-soft:#163222; --warn:#f0a63c; --warn-soft:#3a2a12; --bad:#ff7070; --bad-soft:#3a1a1c;
+  --st-edit:#a98bff; --st-review:#f0a63c; --st-done:#4cc77a; --st-new:#98a0b0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1218; --panel:#171b23; --line:#2a303c; --fg:#e8ebf1; --muted:#98a0b0;
+  --accent:#6f8dff; --accent-ink:#0b0f1a; --accent-soft:#1f2a4d;
+  --ok:#4cc77a; --ok-soft:#163222; --warn:#f0a63c; --warn-soft:#3a2a12; --bad:#ff7070; --bad-soft:#3a1a1c;
+  --st-edit:#a98bff; --st-review:#f0a63c; --st-done:#4cc77a; --st-new:#98a0b0; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-block:24px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:2px 0 0;font-size:13px}
+.hdr-act{display:flex;gap:8px;flex-wrap:wrap}
+.tc{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:4px 10px;font-size:12px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.strip>div{padding:14px 16px;border-right:1px solid var(--line);min-width:0}
+.strip>div:last-child{border-right:0}
+.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.big{font-family:var(--display);font-weight:700;font-size:22px;margin-top:2px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.big.pending{color:var(--bad)} .big.got{color:var(--ok)}
+.bar{height:6px;border-radius:3px;background:var(--bad-soft);margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px}
+.tabs button{border:0;background:none;padding:6px 12px;border-radius:7px;cursor:pointer;color:var(--muted);font-weight:500}
+.tabs button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.tabs .n{font-family:var(--mono);font-size:11px;margin-left:4px}
+.search{flex:1 1 200px;max-width:280px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 12px}
+
+.list{display:grid;gap:8px}
+.job{display:grid;grid-template-columns:6px minmax(0,2.2fr) minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.4fr) auto;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px 12px 0;cursor:pointer}
+.job:hover{border-color:var(--accent)}
+.clip{align-self:stretch;border-radius:0 4px 4px 0}
+.job .t{font-weight:600;overflow-wrap:anywhere}
+.job .c{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.meta{font-size:12px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pay-paid{background:var(--ok-soft);color:var(--ok)} .pay-part{background:var(--warn-soft);color:var(--warn)} .pay-unpaid{background:var(--bad-soft);color:var(--bad)}
+.money{text-align:right}
+.money .hdr-act{display:flex;gap:8px;flex-wrap:wrap}
+.tc{font-weight:500}
+.due{font-size:12px}
+.due.late{color:var(--bad);font-weight:600}
+.linkcell{display:flex;gap:6px;align-items:center;min-width:0}
+.linkcell a{color:var(--accent);text-decoration:none;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.linkcell a:hover{text-decoration:underline}
+.nolink{font-size:12px;color:var(--muted);font-style:italic}
+
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:40px 20px;text-align:center;color:var(--muted)}
+.empty h2{font-family:var(--display);color:var(--fg);font-size:18px;margin:0 0 6px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,12,18,.45);z-index:20}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:21;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer form{display:flex;flex-direction:column;min-height:0;flex:1}
+.dh{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dh h2{font-family:var(--display);font-size:18px;margin:0}
+.db{padding:16px 20px;overflow:auto;display:grid;gap:14px;flex:1}
+.df{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.field{display:grid;gap:4px}
+.field label{font-size:12px;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px;width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:12px;color:var(--muted)}
+.confirm{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:10px 12px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:13px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:8px;z-index:30;font-size:13px}
+.notice{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 14px;font-size:13px}
+
+@media (max-width:760px){
+  .strip{grid-template-columns:1fr 1fr}
+  .strip>div:nth-child(2){border-right:0}
+  .strip>div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .job{grid-template-columns:6px minmax(0,1fr) auto;row-gap:6px}
+  .job .col-status,.job .col-link{grid-column:2 / 4}
+  .job .col-money{grid-column:3;grid-row:1}
+  .job .col-due{grid-column:2 / 4}
+  .job .col-act{grid-column:2 / 4}
+  .job .col-act:empty{display:none}
+  .clip{grid-row:1 / span 4}
+  .search{max-width:none}
+}
+@media (prefers-reduced-motion:no-preference){.drawer{animation:slide .18s ease-out}@keyframes slide{from{transform:translateX(24px);opacity:.6}}}
+</style><style>body{margin:0;font-size:14px}</style></head><body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Cutlist</h1>
+      <p class="sub">Your editing jobs: who it's for, what they owe, where the final cut lives. Saved on this phone.</p>
+    </div>
+    <div class="hdr-act"><button class="btn" id="backupBtn" type="button">Back up</button><button class="btn" id="restoreBtn" type="button">Restore</button><button class="btn primary" id="addBtn" type="button">+ New job</button></div>
+  </header>
+
+  <div id="notice" class="notice" hidden></div>
+
+  <section class="strip" aria-label="Money summary">
+    <div><div class="lbl">Billed</div><div class="big tc" id="sBilled">—</div></div>
+    <div><div class="lbl">Received</div><div class="big got tc" id="sGot">—</div><div class="bar"><i id="sBar" style="width:0"></i></div></div>
+    <div><div class="lbl">Pending</div><div class="big pending tc" id="sPend">—</div><div class="meta" id="sPendN"></div></div>
+    <div><div class="lbl">In progress</div><div class="big tc" id="sOpen">—</div><div class="meta" id="sLate"></div></div>
+  </section>
+
+  <div class="tools">
+    <div class="tabs" role="group" aria-label="Filter jobs" id="tabs"></div>
+    <input class="search" id="q" type="search" placeholder="Search client or project" aria-label="Search">
+  </div>
+
+  <div class="list" id="list">
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const CUR = "₹";
+const STATUSES = [["new","Not started","--st-new"],["editing","Editing","--st-edit"],["review","With client","--st-review"],["delivered","Delivered","--st-done"]];
+const statusOf = k => STATUSES.find(s=>s[0]===k) || STATUSES[0];
+const FILTERS = [["all","All"],["unpaid","Payment due"],["active","In progress"],["delivered","Delivered"]];
+let jobs = [], filter = "all", q = "", db = null, canWrite = true;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v => { const n = parseFloat(v); return isFinite(n) ? n : 0; };
+const money = n => CUR + Math.round(n).toLocaleString("en-IN");
+const today = () => new Date().toISOString().slice(0,10);
+function payState(j){ const f=num(j.fee), p=num(j.paid); if(f>0 && p>=f) return "paid"; if(p>0) return "part"; return f>0?"unpaid":"paid"; }
+function isLate(j){ return j.due && j.status!=="delivered" && j.due < today(); }
+function fmtDate(d){ if(!d) return ""; const x=new Date(d+"T00:00:00"); return x.toLocaleDateString(undefined,{day:"numeric",month:"short"}); }
+function safeUrl(u){ try{ const x=new URL(u); return /^https?:$/.test(x.protocol)?x.href:null; }catch{ return null; } }
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,2200); }
+
+function matches(j){
+  if(filter==="unpaid" && payState(j)==="paid") return false;
+  if(filter==="active" && j.status==="delivered") return false;
+  if(filter==="delivered" && j.status!=="delivered") return false;
+  if(q){ const h=(j.client+" "+j.title+" "+(j.notes||"")).toLowerCase(); if(!h.includes(q)) return false; }
+  return true;
+}
+
+function render(){
+  const billed=jobs.reduce((a,j)=>a+num(j.fee),0), got=jobs.reduce((a,j)=>a+Math.min(num(j.paid),num(j.fee)||num(j.paid)),0);
+  const owing=jobs.filter(j=>payState(j)!=="paid");
+  const open=jobs.filter(j=>j.status!=="delivered"), late=jobs.filter(isLate);
+  $("sBilled").textContent=money(billed);
+  $("sGot").textContent=money(got);
+  $("sBar").style.width=(billed?Math.round(got/billed*100):0)+"%";
+  $("sPend").textContent=money(Math.max(billed-got,0));
+  $("sPendN").textContent=owing.length?`${owing.length} client${owing.length>1?"s":""} owe you`:"All settled";
+  $("sOpen").textContent=open.length;
+  $("sLate").textContent=late.length?`${late.length} past due date`:"Nothing overdue";
+  $("sLate").style.color=late.length?"var(--bad)":"";
+
+  const counts={all:jobs.length,unpaid:owing.length,active:open.length,delivered:jobs.length-open.length};
+  $("tabs").innerHTML=FILTERS.map(([k,l])=>`<button type="button" data-f="${k}" aria-pressed="${filter===k}">${l}<span class="n">${counts[k]}</span></button>`).join("");
+
+  const shown=jobs.filter(matches).sort((a,b)=>{
+    const ad=a.status==="delivered", bd=b.status==="delivered"; if(ad!==bd) return ad?1:-1;
+    return (a.due||"9999").localeCompare(b.due||"9999");
+  });
+  const L=$("list");
+  if(!jobs.length){ L.innerHTML=`<div class="empty"><h2>No jobs yet</h2><p>Add your first client job with <b>+ New job</b>: client, fee, due date and the link to the final video.</p></div>`; return; }
+  if(!shown.length){ L.innerHTML=`<div class="empty"><h2>Nothing here</h2><p>No jobs match this filter.</p></div>`; return; }
+  L.innerHTML=shown.map(j=>{
+    const [,sl,sv]=statusOf(j.status), ps=payState(j), url=safeUrl(j.link);
+    const pl={paid:"Paid",part:"Part paid",unpaid:"Unpaid"}[ps];
+    const bal=num(j.fee)-num(j.paid);
+    return `<div class="job" data-id="${esc(j.id)}" tabindex="0" role="button" aria-label="Edit ${esc(j.title)}">
+      <span class="clip" style="background:var(${sv})"></span>
+      <div><div class="t">${esc(j.title)||"Untitled"}</div><div class="c">${esc(j.client)}${j.phone?` · <span class="tc">${esc(j.phone)}</span>`:""}</div></div>
+      <div class="col-status"><span class="chip" style="color:var(${sv})">${sl}</span>
+        <div class="due ${isLate(j)?"late":""}">${j.due?(isLate(j)?"Overdue · ":"Due ")+fmtDate(j.due):""}</div></div>
+      <div class="money col-money"><div class="tc">${money(num(j.fee))}</div><span class="chip pay-${ps}">${pl}${ps==="part"?` · ${money(bal)} left`:""}</span></div>
+      <div class="col-link linkcell">${url?`<a href="${esc(url)}" target="_blank" rel="noopener">${esc(url.replace(/^https?:\/\/(www\.)?/,""))}</a><button class="btn sm" type="button" data-copy="${esc(url)}">Copy</button>`:`<span class="nolink">No output link yet</span>`}</div>
+      <div class="col-act">${ps!=="paid"&&canWrite?`<button class="btn sm" type="button" data-paid="${esc(j.id)}">Mark paid</button>`:""}</div>
+    </div>`;
+  }).join("");
+}
+
+/* drawer */
+let drawerEl=null;
+function openDrawer(job){
+  closeDrawer();
+  const j=job||{status:"new",fee:"",paid:"",due:""};
+  const wrap=document.createElement("div");
+  wrap.innerHTML=`<div class="scrim" data-close></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+   <form id="jobForm">
+    <div class="dh"><h2 id="dTitle">${job?"Edit job":"New job"}</h2><button class="btn sm" type="button" data-close>Close</button></div>
+    <div class="db">
+      <div class="field"><label for="f_client">Client</label><input id="f_client" name="client" required value="${esc(j.client)}" placeholder="e.g. Priya Studios"></div>
+      <div class="field"><label for="f_phone">Phone or email</label><input id="f_phone" name="phone" value="${esc(j.phone)}"></div>
+      <div class="field"><label for="f_title">Project</label><input id="f_title" name="title" required value="${esc(j.title)}" placeholder="e.g. Wedding highlight reel"></div>
+      <div class="two">
+        <div class="field"><label for="f_status">Status</label><select id="f_status" name="status">${STATUSES.map(([k,l])=>`<option value="${k}" ${j.status===k?"selected":""}>${l}</option>`).join("")}</select></div>
+        <div class="field"><label for="f_due">Due date</label><input id="f_due" name="due" type="date" value="${esc(j.due)}"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="f_fee">Fee (${CUR})</label><input id="f_fee" name="fee" type="number" min="0" step="1" inputmode="decimal" value="${esc(j.fee)}"></div>
+        <div class="field"><label for="f_paid">Received (${CUR})</label><input id="f_paid" name="paid" type="number" min="0" step="1" inputmode="decimal" value="${esc(j.paid)}"></div>
+      </div>
+      <div class="field"><label for="f_link">Video output link</label><input id="f_link" name="link" type="url" value="${esc(j.link)}" placeholder="https://drive.google.com/…"><span class="hint">Drive, Dropbox, YouTube, Frame.io — any link that starts with https://</span></div>
+      <div class="field"><label for="f_notes">Notes</label><textarea id="f_notes" name="notes" rows="3" placeholder="Revisions, format, aspect ratio…">${esc(j.notes)}</textarea></div>
+      <div id="delZone"></div>
+    </div>
+    <div class="df">
+      ${job?`<button class="btn danger" type="button" id="delBtn">Delete</button>`:"<span></span>"}
+      <button class="btn primary" type="submit">${job?"Save changes":"Add job"}</button>
+    </div>
+   </form>
+  </aside>`;
+  document.body.appendChild(wrap); drawerEl=wrap;
+  wrap.addEventListener("click",e=>{ if(e.target.closest("[data-close]")) closeDrawer(); });
+  $("f_client").focus();
+  $("jobForm").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const fd=Object.fromEntries(new FormData(e.target));
+    const data={client:fd.client.trim(),phone:fd.phone.trim(),title:fd.title.trim(),status:fd.status,due:fd.due,
+      fee:num(fd.fee),paid:num(fd.paid),link:fd.link.trim(),notes:fd.notes.trim(),updated:Date.now()};
+    try{
+      if(job){ await db.collection("jobs").doc(job.id).set({...data,created:job.created||Date.now()}); toast("Saved"); }
+      else { await db.collection("jobs").add({...data,created:Date.now()}); toast("Job added"); }
+      closeDrawer();
+    }catch(err){ toast("Couldn't save: "+(err?.message||"try again")); }
+  });
+  const del=$("delBtn");
+  if(del) del.addEventListener("click",()=>{
+    $("delZone").innerHTML=`<div class="confirm">Delete “${esc(j.title)}” for good?<span><button class="btn sm" type="button" id="noDel">Keep</button> <button class="btn sm danger" type="button" id="yesDel">Delete</button></span></div>`;
+    $("noDel").onclick=()=>$("delZone").innerHTML="";
+    $("yesDel").onclick=async()=>{ try{ await db.collection("jobs").doc(job.id).delete(); toast("Deleted"); closeDrawer(); }catch(err){ toast("Couldn't delete"); } };
+  });
+}
+function closeDrawer(){ if(drawerEl){ drawerEl.remove(); drawerEl=null; } }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeDrawer(); });
+
+$("addBtn").onclick=()=>{ openDrawer(); };
+$("q").addEventListener("input",e=>{ q=e.target.value.trim().toLowerCase(); render(); });
+$("tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-f]"); if(b){ filter=b.dataset.f; render(); } });
+$("list").addEventListener("click",async e=>{
+  const c=e.target.closest("[data-copy]");
+  if(c){ e.stopPropagation(); try{ await copyText(c.dataset.copy); if(!window.Android) toast("Link copied"); }catch{ toast("Copy blocked — long-press the link instead"); } return; }
+  const p=e.target.closest("[data-paid]");
+  if(p){ e.stopPropagation(); const j=jobs.find(x=>x.id===p.dataset.paid); try{ await db.collection("jobs").doc(j.id).update({paid:num(j.fee),updated:Date.now()}); toast("Marked paid"); }catch{ toast("Couldn't update"); } return; }
+  if(e.target.closest("a")) return;
+  const row=e.target.closest(".job"); if(row && canWrite && db) openDrawer(jobs.find(x=>x.id===row.dataset.id));
+});
+$("list").addEventListener("keydown",e=>{ if(e.key==="Enter" && e.target.classList.contains("job")) e.target.click(); });
+
+
+/* ---- on-device storage (Android app) ---- */
+const KEY="cutlist.jobs.v1";
+function loadAll(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch{ return []; } }
+function saveAll(){ try{ localStorage.setItem(KEY, JSON.stringify(jobs)); }catch(e){ toast("Couldn't save on this phone"); } render(); }
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+db={collection(){ return {
+  add:async d=>{ jobs.push({id:newId(),...d}); saveAll(); },
+  doc:id=>({
+    set:async d=>{ const i=jobs.findIndex(j=>j.id===id); const row={id,...d}; if(i<0) jobs.push(row); else jobs[i]=row; saveAll(); },
+    update:async d=>{ const j=jobs.find(j=>j.id===id); if(j){ Object.assign(j,d); saveAll(); } },
+    delete:async()=>{ jobs=jobs.filter(j=>j.id!==id); saveAll(); }
+  })
+}; }};
+jobs=loadAll();
+render();
+
+/* copy + open link through the Android app */
+async function copyText(t){ if(window.Android){ Android.copy(t); return; } await navigator.clipboard.writeText(t); }
+
+/* backup / restore */
+$("backupBtn").onclick=()=>{
+  const data=JSON.stringify({app:"cutlist",version:1,saved:new Date().toISOString(),jobs},null,1);
+  if(window.Android) Android.share("Cutlist backup "+today(), data); else copyText(data).then(()=>toast("Backup copied"));
+};
+$("restoreBtn").onclick=()=>{
+  closeDrawer();
+  const wrap=document.createElement("div");
+  wrap.innerHTML=`<div class="scrim" data-close></div><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="rTitle"><form id="rForm">
+   <div class="dh"><h2 id="rTitle">Restore backup</h2><button class="btn sm" type="button" data-close>Close</button></div>
+   <div class="db"><p class="hint">Paste the text from a Cutlist backup. This replaces the ${jobs.length} job${jobs.length===1?"":"s"} on this phone.</p>
+   <div class="field"><label for="r_text">Backup text</label><textarea id="r_text" rows="10" required></textarea></div></div>
+   <div class="df"><span></span><button class="btn primary" type="submit">Restore</button></div></form></aside>`;
+  document.body.appendChild(wrap); drawerEl=wrap;
+  wrap.addEventListener("click",e=>{ if(e.target.closest("[data-close]")) closeDrawer(); });
+  $("rForm").addEventListener("submit",e=>{ e.preventDefault();
+    try{ const d=JSON.parse($("r_text").value); const list=Array.isArray(d)?d:d.jobs; if(!Array.isArray(list)) throw 0;
+      jobs=list.filter(j=>j&&typeof j==="object").map(j=>({...j,id:String(j.id||newId())})); saveAll(); closeDrawer(); toast(`Restored ${jobs.length} jobs`);
+    }catch{ toast("That isn't a Cutlist backup. Paste the whole text."); } });
+};
+</script>
+</body></html>
