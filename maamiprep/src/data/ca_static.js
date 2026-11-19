@@ -1,0 +1,168 @@
+export const caStatic = [
+{
+  id: 'sbank', title: 'Static Banking Knowledge', blurb: 'Must-know basics', icon: 'piggy-bank', color: 'pur', imp: true,
+  notes: [
+    { h: 'Banking history timeline', imp: true, table: [
+      ['1770', 'Bank of Hindustan – first bank in India'], ['1806', 'Bank of Calcutta → Bank of Bengal'],
+      ['1894', 'Punjab National Bank – first bank fully Indian-owned'], ['1921', 'Imperial Bank of India (3 presidency banks merged)'],
+      ['1935', 'RBI established'], ['1955', 'SBI formed (Imperial Bank nationalised)'], ['1969', '14 banks nationalised (19 July)'],
+      ['1975', 'RRBs set up (2 Oct) – Narasimham Working Group'], ['1980', '6 more banks nationalised'], ['1982', 'NABARD & EXIM Bank'],
+      ['1988', 'NHB'], ['1990', 'SIDBI'], ['2015', 'MUDRA Bank; Payments & Small Finance Bank licences'], ['2020', '10 PSBs merged into 4 → 12 PSBs'],
+    ] },
+    { h: 'Monetary policy tools', imp: true, pts: [
+      'CRR – % of NDTL kept with RBI in cash; no interest. (RBI Act Sec 42).',
+      'SLR – % of NDTL kept as liquid assets (cash, gold, G-secs) by the bank itself (BR Act Sec 24). Max 40%.',
+      'Repo – RBI lends to banks against G-secs (short-term). Reverse repo – banks park money with RBI.',
+      'SDF – Standing Deposit Facility (2022), floor of the LAF corridor, no collateral needed.',
+      'MSF – banks borrow overnight from RBI by dipping into SLR (up to 2% of NDTL); ceiling of corridor.',
+      'Bank Rate – long-term lending rate to banks, = MSF.',
+      'OMO – RBI buys/sells G-secs: Buy = inject liquidity; Sell = absorb liquidity.',
+    ], hint: 'CRR → Cash to RBI. SLR → Self (bank keeps it). Hike any of them = less money = control inflation.' },
+    { h: 'Payment systems', imp: true, table: [
+      ['NEFT', '24×7 since Dec 2019; batch-wise; no min/max limit'], ['RTGS', 'Real time; min ₹2 lakh; 24×7 since Dec 2020'],
+      ['IMPS', 'Instant 24×7; NPCI; limit ₹5 lakh'], ['UPI', 'NPCI, 2016; ₹1 lakh general limit (higher for some categories)'],
+      ['NPCI', 'Est. 2008, Mumbai; runs UPI, RuPay, IMPS, NACH, AePS, FASTag (NETC), BBPS'], ['CTS', 'Cheque Truncation System – image based clearing'],
+    ] },
+    { h: 'Deposit insurance & ombudsman', pts: [
+      'DICGC (subsidiary of RBI) insures deposits up to ₹5 lakh per depositor per bank (since 2020).',
+      'RBI Integrated Ombudsman Scheme 2021 – "One Nation One Ombudsman"; no fee.',
+      'Basel III – CRAR 9% in India (+2.5% CCB = 11.5%); global min 8%.',
+      'NPA – loan overdue > 90 days. SMA-0: 1–30, SMA-1: 31–60, SMA-2: 61–90 days.',
+    ] },
+    { h: 'Types of banks', pts: [
+      'Payments Banks – deposit up to ₹2 lakh/customer, no loans, min capital ₹100 cr (Nachiket Mor).',
+      'Small Finance Banks – 75% ANBC to priority sector, min capital ₹200 cr (₹300 cr for new).',
+      'Scheduled banks – in 2nd Schedule of RBI Act 1934.',
+      'Priority Sector Lending – 40% of ANBC for domestic SCBs; 75% for RRBs & SFBs.',
+    ] },
+    { h: 'Bank HQs & taglines (popular)', table: [
+      ['SBI', 'Mumbai – "The banker to every Indian"'], ['PNB', 'New Delhi'], ['Bank of Baroda', 'Vadodara – "India\'s International Bank"'],
+      ['Canara Bank', 'Bengaluru'], ['Union Bank', 'Mumbai'], ['Bank of India', 'Mumbai – "Relationship beyond banking"'],
+      ['Indian Bank', 'Chennai'], ['Indian Overseas Bank', 'Chennai'], ['UCO Bank', 'Kolkata'], ['Central Bank of India', 'Mumbai'],
+      ['Bank of Maharashtra', 'Pune'], ['Punjab & Sind Bank', 'New Delhi'], ['HDFC Bank', 'Mumbai'], ['ICICI Bank', 'Vadodara (Regd.)'],
+      ['Axis Bank', 'Mumbai'], ['Kotak Mahindra', 'Mumbai'], ['Federal Bank', 'Aluva, Kerala'], ['South Indian Bank', 'Thrissur'],
+    ] },
+  ],
+  facts: [
+    ['First bank in India', 'Bank of Hindustan'], ['Year of first bank nationalisation (14 banks)', '1969'], ['SBI formed in', '1955'],
+    ['NABARD established in', '1982'], ['SIDBI established in', '1990'], ['NHB established in', '1988'], ['NPCI established in', '2008'],
+    ['DICGC deposit insurance limit', '₹5 lakh'], ['RTGS minimum amount', '₹2 lakh'], ['Max deposit in a Payments Bank', '₹2 lakh'],
+    ['NPA after overdue of', '90 days'], ['CRR is governed by RBI Act section', 'Section 42'], ['SLR is governed by BR Act section', 'Section 24'],
+    ['Minimum CRAR for Indian banks (Basel III)', '9%'], ['Number of Public Sector Banks', '12'], ['RRBs set up on', '2 October 1975'],
+    ['Headquarters of Indian Bank', 'Chennai'], ['Headquarters of Canara Bank', 'Bengaluru'], ['Headquarters of Bank of Baroda', 'Vadodara'],
+    ['Headquarters of UCO Bank', 'Kolkata'], ['Headquarters of Bank of Maharashtra', 'Pune'], ['Headquarters of Federal Bank', 'Aluva'],
+    ['PSL target for domestic commercial banks', '40% of ANBC'], ['Integrated Ombudsman Scheme launched', '2021'],
+    ['SMA-2 overdue period', '61–90 days'], ['Ceiling of LAF corridor', 'MSF'], ['Floor of LAF corridor', 'SDF'],
+  ],
+  qs: [
+    ['Which tool requires banks to keep cash with RBI?', ['SLR', 'CRR', 'MSF', 'Repo'], 1, 'CRR – cash with RBI, no interest.'],
+    ['RBI selling G-secs in open market will:', ['Inject liquidity', 'Absorb liquidity', 'Raise CRR', 'Cut repo'], 1, 'Sale pulls money out of the system.'],
+    ['A loan becomes NPA when interest/principal is overdue for more than:', ['30 days', '60 days', '90 days', '180 days'], 2, '90 days.'],
+    ['Deposit insurance cover by DICGC per depositor per bank:', ['₹1 lakh', '₹2 lakh', '₹5 lakh', '₹10 lakh'], 2, 'Raised to ₹5 lakh in 2020.'],
+    ['Which is NOT operated by NPCI?', ['UPI', 'RuPay', 'RTGS', 'IMPS'], 2, 'RTGS & NEFT are run by RBI.'],
+    ['Max balance per customer in a Payments Bank:', ['₹1 lakh', '₹2 lakh', '₹5 lakh', 'No limit'], 1, 'Raised from ₹1 lakh to ₹2 lakh in 2021.'],
+  ],
+},
+{
+  id: 'sgk', title: 'Static General Knowledge', blurb: 'Parks, dances, HQs', icon: 'compass', color: 'org', imp: true,
+  notes: [
+    { h: 'International organisations – HQ', imp: true, table: [
+      ['UN', 'New York'], ['IMF / World Bank', 'Washington DC'], ['WTO / WHO / ILO', 'Geneva'], ['UNESCO', 'Paris'],
+      ['FAO', 'Rome'], ['UNICEF', 'New York'], ['UNEP', 'Nairobi'], ['ADB', 'Manila'], ['AIIB', 'Beijing'], ['NDB (BRICS)', 'Shanghai'],
+      ['ASEAN', 'Jakarta'], ['SAARC', 'Kathmandu'], ['BIMSTEC', 'Dhaka'], ['OPEC', 'Vienna'], ['IAEA', 'Vienna'], ['BIS', 'Basel'],
+      ['Interpol', 'Lyon'], ['ICJ', 'The Hague'], ['NATO', 'Brussels'], ['SCO', 'Beijing'],
+    ], hint: 'Geneva = "WHO, WTO, ILO went to Geneva". Vienna = Oil (OPEC) + Atoms (IAEA).' },
+    { h: 'Countries – capital & currency (frequent)', table: [
+      ['Japan', 'Tokyo – Yen'], ['China', 'Beijing – Renminbi (Yuan)'], ['Bangladesh', 'Dhaka – Taka'], ['Nepal', 'Kathmandu – Nepalese Rupee'],
+      ['Bhutan', 'Thimphu – Ngultrum'], ['Sri Lanka', 'Sri Jayawardenepura Kotte – Rupee'], ['Myanmar', 'Naypyidaw – Kyat'],
+      ['Maldives', 'Malé – Rufiyaa'], ['Afghanistan', 'Kabul – Afghani'], ['Türkiye', 'Ankara – Lira'], ['Brazil', 'Brasília – Real'],
+      ['South Africa', 'Pretoria – Rand'], ['Russia', 'Moscow – Rouble'], ['UAE', 'Abu Dhabi – Dirham'], ['Saudi Arabia', 'Riyadh – Riyal'],
+      ['Indonesia', 'Jakarta – Rupiah'], ['Thailand', 'Bangkok – Baht'], ['Vietnam', 'Hanoi – Dong'], ['Kyrgyzstan', 'Bishkek – Som'],
+      ['Morocco', 'Rabat – Dirham'], ['Philippines', 'Manila – Peso'], ['South Korea', 'Seoul – Won'],
+    ] },
+    { h: 'National parks & sanctuaries', table: [
+      ['Kaziranga', 'Assam – one-horned rhino'], ['Jim Corbett', 'Uttarakhand – first NP (1936)'], ['Gir', 'Gujarat – Asiatic lion'],
+      ['Ranthambore', 'Rajasthan – tigers'], ['Sundarbans', 'West Bengal – Royal Bengal tiger'], ['Periyar', 'Kerala'],
+      ['Bandipur', 'Karnataka'], ['Kanha', 'Madhya Pradesh'], ['Keibul Lamjao', 'Manipur – floating NP, Sangai deer'],
+      ['Hemis', 'Ladakh – snow leopard'], ['Silent Valley', 'Kerala'], ['Mudumalai', 'Tamil Nadu'], ['Dudhwa', 'Uttar Pradesh'],
+    ] },
+    { h: 'Classical dances (8)', table: [
+      ['Bharatanatyam', 'Tamil Nadu'], ['Kathakali', 'Kerala'], ['Mohiniyattam', 'Kerala'], ['Kuchipudi', 'Andhra Pradesh'],
+      ['Odissi', 'Odisha'], ['Kathak', 'Uttar Pradesh'], ['Manipuri', 'Manipur'], ['Sattriya', 'Assam'],
+    ] },
+    { h: 'Stadiums', table: [
+      ['Narendra Modi Stadium', 'Ahmedabad – largest cricket stadium'], ['Eden Gardens', 'Kolkata'], ['M.A. Chidambaram (Chepauk)', 'Chennai'],
+      ['Wankhede', 'Mumbai'], ['M. Chinnaswamy', 'Bengaluru'], ['Arun Jaitley', 'Delhi'], ['Kalinga', 'Bhubaneswar – hockey'],
+      ['Birsa Munda', 'Rourkela – hockey'], ['Salt Lake (Yuva Bharati)', 'Kolkata – football'],
+    ] },
+    { h: 'Power plants (frequent)', table: [
+      ['Kudankulam', 'Tamil Nadu – nuclear (Russia)'], ['Tarapur', 'Maharashtra – first nuclear plant'], ['Kaiga', 'Karnataka – nuclear'],
+      ['Rawatbhata', 'Rajasthan – nuclear'], ['Bhadla Solar Park', 'Rajasthan'], ['Tehri Dam', 'Uttarakhand – Bhagirathi'],
+    ] },
+  ],
+  facts: [
+    ['HQ of UNESCO', 'Paris'], ['HQ of FAO', 'Rome'], ['HQ of UNEP', 'Nairobi'], ['HQ of OPEC', 'Vienna'], ['HQ of BIS', 'Basel'],
+    ['HQ of SAARC', 'Kathmandu'], ['HQ of BIMSTEC', 'Dhaka'], ['HQ of ASEAN', 'Jakarta'], ['HQ of ICJ', 'The Hague'], ['HQ of WTO', 'Geneva'],
+    ['Currency of Bhutan', 'Ngultrum'], ['Currency of Maldives', 'Rufiyaa'], ['Currency of Myanmar', 'Kyat'], ['Currency of Bangladesh', 'Taka'],
+    ['Currency of Türkiye', 'Lira'], ['Currency of Brazil', 'Real'], ['Currency of South Africa', 'Rand'], ['Currency of Indonesia', 'Rupiah'],
+    ['Currency of Thailand', 'Baht'], ['Currency of Vietnam', 'Dong'], ['Currency of Kyrgyzstan', 'Som'], ['Capital of Kyrgyzstan', 'Bishkek'],
+    ['Capital of Myanmar', 'Naypyidaw'], ['Capital of Brazil', 'Brasília'], ['Capital of Morocco', 'Rabat'],
+    ['Kaziranga National Park state', 'Assam'], ['Gir National Park famous for', 'Asiatic lion'], ['India\'s first national park', 'Jim Corbett'],
+    ['Floating national park', 'Keibul Lamjao'], ['Hemis National Park famous for', 'Snow leopard'], ['Sattriya dance state', 'Assam'],
+    ['Kuchipudi dance state', 'Andhra Pradesh'], ['Mohiniyattam dance state', 'Kerala'], ['Eden Gardens city', 'Kolkata'],
+    ['Kalinga Stadium city', 'Bhubaneswar'], ['Kudankulam plant state', 'Tamil Nadu'], ['India\'s first nuclear plant', 'Tarapur'],
+    ['Bhadla Solar Park state', 'Rajasthan'], ['Largest cricket stadium', 'Narendra Modi Stadium'],
+  ],
+  qs: [
+    ['Headquarters of the New Development Bank:', ['Beijing', 'Shanghai', 'New Delhi', 'Moscow'], 1, 'NDB (BRICS bank) – Shanghai.'],
+    ['Sangai deer is found in:', ['Kaziranga', 'Keibul Lamjao', 'Hemis', 'Gir'], 1, 'Floating NP on Loktak lake, Manipur.'],
+  ],
+},
+{
+  id: 'cstat', title: 'Current Static Information', blurb: 'Latest counts & heads', icon: 'info', color: 'pnk', imp: true,
+  notes: [
+    { h: 'Latest numbers (Nov 2026)', imp: true, table: [
+      ['States / UTs', '28 / 8'], ['Ramsar sites', '103'], ['Public Sector Banks', '12'], ['Inflation target', '4% ± 2% (till 2031)'],
+      ['Repo rate', '5.50%'], ['DICGC cover', '₹5 lakh'], ['Fiscal deficit target FY27', '4.3%'], ['India in GII 2026', '38th'],
+    ] },
+    { h: 'Organisation heads', imp: true, table: [
+      ['RBI Governor', 'Sanjay Malhotra'], ['SEBI', 'Tuhin Kanta Pandey'], ['IRDAI', 'Ajay Seth'], ['SBI', 'C.S. Setty'],
+      ['HDFC Bank MD & CEO', 'Anup Bagchi'], ['ISRO', 'V. Narayanan'], ['NITI Aayog CEO', 'B.V.R. Subrahmanyam'], ['CEC', 'Gyanesh Kumar'],
+      ['CJI', 'Surya Kant'], ['Army Chief', 'Gen Dhiraj Seth'], ['UK PM', 'Andy Burnham'],
+    ], hint: 'Heads can change close to the exam – re-check the week before.' },
+  ],
+  facts: [['ISRO Chairman', 'V. Narayanan'], ['NITI Aayog CEO', 'B.V.R. Subrahmanyam'], ['Number of states in India', '28'], ['Number of UTs in India', '8'],
+    ['Number of Ramsar sites (Nov 2026)', '103'], ['HDFC Bank MD & CEO', 'Anup Bagchi']],
+  qs: [],
+},
+{
+  id: 'abbr', title: 'Abbreviations', blurb: 'Banking & tech', icon: 'type', color: 'blu', imp: true,
+  notes: [{ h: 'Most asked abbreviations', imp: true, table: [
+    ['NEFT', 'National Electronic Funds Transfer'], ['RTGS', 'Real Time Gross Settlement'], ['IMPS', 'Immediate Payment Service'],
+    ['UPI', 'Unified Payments Interface'], ['NPCI', 'National Payments Corporation of India'], ['NACH', 'National Automated Clearing House'],
+    ['AePS', 'Aadhaar enabled Payment System'], ['BBPS', 'Bharat Bill Payment System'], ['CBDC', 'Central Bank Digital Currency'],
+    ['CRR', 'Cash Reserve Ratio'], ['SLR', 'Statutory Liquidity Ratio'], ['MSF', 'Marginal Standing Facility'], ['SDF', 'Standing Deposit Facility'],
+    ['LAF', 'Liquidity Adjustment Facility'], ['OMO', 'Open Market Operations'], ['MCLR', 'Marginal Cost of Funds based Lending Rate'],
+    ['EBLR', 'External Benchmark Lending Rate'], ['NDTL', 'Net Demand and Time Liabilities'], ['ANBC', 'Adjusted Net Bank Credit'],
+    ['NPA', 'Non-Performing Asset'], ['CRAR', 'Capital to Risk-weighted Assets Ratio'], ['PCA', 'Prompt Corrective Action'],
+    ['ARC', 'Asset Reconstruction Company'], ['IBC', 'Insolvency and Bankruptcy Code'], ['DICGC', 'Deposit Insurance and Credit Guarantee Corporation'],
+    ['KYC', 'Know Your Customer'], ['CKYC', 'Central Know Your Customer'], ['AML', 'Anti-Money Laundering'], ['FEMA', 'Foreign Exchange Management Act'],
+    ['SARFAESI', 'Securitisation and Reconstruction of Financial Assets and Enforcement of Security Interest'], ['MUDRA', 'Micro Units Development & Refinance Agency'],
+    ['NABARD', 'National Bank for Agriculture and Rural Development'], ['SIDBI', 'Small Industries Development Bank of India'],
+    ['CGTMSE', 'Credit Guarantee Fund Trust for Micro and Small Enterprises'], ['FDI', 'Foreign Direct Investment'], ['FPI', 'Foreign Portfolio Investor'],
+    ['GDP', 'Gross Domestic Product'], ['CPI', 'Consumer Price Index'], ['WPI', 'Wholesale Price Index'], ['IIP', 'Index of Industrial Production'],
+    ['PLFS', 'Periodic Labour Force Survey'], ['MoSPI', 'Ministry of Statistics and Programme Implementation'], ['CAD', 'Current Account Deficit'],
+    ['TCCFM', 'Technical Consultative Committee for Financial Markets'], ['CETA', 'Comprehensive Economic and Trade Agreement'],
+    ['GII', 'Global Innovation Index'], ['WIPO', 'World Intellectual Property Organization'], ['DRDO', 'Defence Research and Development Organisation'],
+    ['GRSE', 'Garden Reach Shipbuilders and Engineers'], ['GSL', 'Goa Shipyard Limited'], ['VGF', 'Viability Gap Funding'],
+    ['PSL', 'Priority Sector Lending'], ['SFB', 'Small Finance Bank'], ['RRB', 'Regional Rural Bank'], ['IFSC', 'Indian Financial System Code'],
+    ['MICR', 'Magnetic Ink Character Recognition'], ['SWIFT', 'Society for Worldwide Interbank Financial Telecommunication'],
+    ['CIBIL', 'Credit Information Bureau (India) Limited'], ['ECS', 'Electronic Clearing Service'], ['CTS', 'Cheque Truncation System'],
+  ] }],
+  facts: [], qs: [],
+},
+];
+
+// Abbreviation table becomes facts automatically
+const abbr = caStatic.find(t => t.id === 'abbr');
+abbr.facts = abbr.notes[0].table.map(([k, v]) => [`Full form of ${k}`, v]);

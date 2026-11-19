@@ -1,0 +1,15 @@
+{
+  "appId": "com.chan.maamiprep",
+  "appName": "MaamiPrep",
+  "webDir": "dist",
+  "android": {
+    "backgroundColor": "#E6DEFB",
+    "adjustMarginsForEdgeToEdge": "force"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#7C5CFF"
+    }
+  }
+}
