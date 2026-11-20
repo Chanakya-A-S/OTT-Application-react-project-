@@ -2,12 +2,13 @@ import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Bell, Settings2, Plus, BellRing, HandCoins, CalendarClock, ChevronRight, TrendingDown, TrendingUp, Sparkles, ReceiptText } from 'lucide-react'
 import { useStore, monthKey } from '../store.jsx'
+import { openNotificationSettings } from '../native.js'
 import { getCategory } from '../categories.js'
-import { Screen, Money, TxnRow, listVariants, itemVariants, CatIcon, Progress, Empty } from '../components/ui.jsx'
+import { Screen, Money, Avatar, TxnRow, listVariants, itemVariants, CatIcon, Progress, Empty } from '../components/ui.jsx'
 import { MONTHS_LONG, money, emiStats, loanStats, compact } from '../utils.js'
 
 export default function Home({ go, openAdd, openImport, openInbox, openTxn }) {
-  const { state } = useStore()
+  const { state, isNative, notifAccess } = useStore()
   const { txns, inbox, emis, loans, profile, settings } = state
   const now = new Date()
   const mk = monthKey(now)
@@ -34,7 +35,7 @@ export default function Home({ go, openAdd, openImport, openInbox, openTxn }) {
     <Screen>
       <header className="top">
         <div className="hello">
-          <span className="avatar">{(profile.name || 'F')[0].toUpperCase()}</span>
+          <motion.button whileTap={{ scale: 0.92 }} onClick={() => go('settings')} aria-label="Profile"><Avatar profile={profile} /></motion.button>
           <div>
             <small>Hello, {profile.name}</small>
             <h2>Welcome back 👋</h2>
@@ -75,6 +76,14 @@ export default function Home({ go, openAdd, openImport, openInbox, openTxn }) {
           <div><small>To pay</small><strong>{compact(toPay)}</strong></div>
         </div>
       </motion.section>
+
+      {isNative && !notifAccess && (
+        <motion.button className="inbox-banner warn" onClick={openNotificationSettings} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} whileTap={{ scale: 0.98 }}>
+          <span className="pulse"><BellRing size={18} /></span>
+          <div><strong>Turn on auto-tracking</strong><small>Allow Notification access so Montra can read bank &amp; UPI alerts</small></div>
+          <ChevronRight size={18} />
+        </motion.button>
+      )}
 
       {inbox.length > 0 && (
         <motion.button className="inbox-banner" onClick={openInbox} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} whileTap={{ scale: 0.98 }}>

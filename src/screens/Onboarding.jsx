@@ -35,8 +35,8 @@ export default function Onboarding() {
       </div>
 
       <motion.div className="onb-copy" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, type: 'spring', stiffness: 160, damping: 20 }}>
-        <h1>Every rupee,<br />tracked <span className="onb-chip"><ArrowUpRight size={22} /></span><br />automatically</h1>
-        <p>Purrse reads your bank &amp; UPI notifications, sorts spends into categories, and keeps tabs on friend loans and EMIs.</p>
+        <h1>Every <em>rupee</em>,<br />tracked <span className="onb-chip"><ArrowUpRight size={22} /></span><br />automatically</h1>
+        <p>Montra reads your bank &amp; UPI notifications, sorts spends into categories, and keeps tabs on friend loans and EMIs.</p>
         <input className="onb-input" placeholder="What should we call you?" value={name} onChange={(e) => setName(e.target.value)} />
         <div className="onb-actions">
           <button className="link" onClick={() => finishOnboarding(name, true)}>Try with sample data</button>

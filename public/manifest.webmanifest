@@ -1,9 +1,9 @@
 {
-  "name": "Purrse – Money Tracker",
-  "short_name": "Purrse",
+  "name": "Montra – Money Tracker",
+  "short_name": "Montra",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#eef1e9",
+  "background_color": "#0e100b",
   "theme_color": "#b5e550",
   "icons": [
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }

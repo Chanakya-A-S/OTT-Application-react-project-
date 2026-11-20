@@ -11,6 +11,7 @@ import Settings from './screens/Settings.jsx'
 import AllTxns from './screens/AllTxns.jsx'
 import { AddTxnSheet, TxnDetailSheet } from './screens/AddTxn.jsx'
 import { ImportSheet, InboxSheet } from './screens/Import.jsx'
+import { onBackButton } from './native.js'
 
 export default function App() {
   return (
@@ -51,14 +52,30 @@ function Shell() {
   const [importText, setImportText] = useState(null)
   const [inboxOpen, setInboxOpen] = useState(false)
   const [detail, setDetail] = useState(null)
-  useTheme(state.settings.theme)
+  const dark = useTheme(state.settings.theme)
 
-  // Loans section switches the whole app to the orange theme
+  // Loans section switches the whole app to the orange theme; elsewhere the user's chosen accent
   useEffect(() => {
-    document.documentElement.dataset.accent = tab === 'loans' ? 'orange' : 'green'
-  }, [tab])
+    const root = document.documentElement
+    root.dataset.accent = tab === 'loans' ? 'orange' : 'green'
+    if (tab === 'loans') { root.style.removeProperty('--accent'); root.style.removeProperty('--accent-soft'); return }
+    const a = state.settings.accent || '#b5e550'
+    root.style.setProperty('--accent', a)
+    root.style.setProperty('--accent-soft', `color-mix(in srgb, ${a} ${dark ? 18 : 28}%, ${dark ? '#161913' : '#ffffff'})`)
+  }, [tab, state.settings.accent, dark])
+  useEffect(() => { document.documentElement.dataset.hero = state.settings.heroStyle || 'dark' }, [state.settings.heroStyle])
 
-  // Android "Share → Purrse" (PWA share target) or deep links: /?text=...
+  // Android back button: close sheets first, then go back to Home, then minimise
+  useEffect(() => onBackButton(() => {
+    if (detail) { setDetail(null); return true }
+    if (importText !== null) { setImportText(null); return true }
+    if (inboxOpen) { setInboxOpen(false); return true }
+    if (addOpen) { setAddOpen(false); return true }
+    if (tab !== 'home') { setTab('home'); return true }
+    return false
+  }), [detail, importText, inboxOpen, addOpen, tab])
+
+  // Android "Share → Montra" (PWA share target) or deep links: /?text=...
   useEffect(() => {
     const p = new URLSearchParams(location.search)
     const shared = p.get('text') || p.get('title')

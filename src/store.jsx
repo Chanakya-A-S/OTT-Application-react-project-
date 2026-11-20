@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { get, set } from 'idb-keyval'
 import { parseNotification } from './parser.js'
+import { startNotificationSync, isNative } from './native.js'
 
-const KEY = 'purrse-state-v1'
+const KEY = 'montra-state-v1'
 export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4)
 
 export const monthKey = (d) => {
@@ -13,7 +14,7 @@ export const monthKey = (d) => {
 const EMPTY = {
   onboarded: false,
   profile: { name: 'Friend' },
-  settings: { theme: 'system', autoAdd: false, budget: 40000 },
+  settings: { theme: 'system', autoAdd: false, budget: 40000, accent: '#b5e550', heroStyle: 'dark' },
   txns: [],
   loans: [],
   emis: [],
@@ -25,6 +26,7 @@ export const useStore = () => useContext(Ctx)
 
 export function StoreProvider({ children }) {
   const [state, setState] = useState(null)
+  const [notifAccess, setNotifAccess] = useState(false)
   const ready = state !== null
   const saveTimer = useRef()
 
@@ -54,9 +56,9 @@ export function StoreProvider({ children }) {
 
     // Notification pipeline -------------------------------------------------
     ingestNotification: (text, meta = {}) => {
-      const parsed = parseNotification(text)
+      const parsed = parseNotification(text, meta.time)
       if (!parsed) return null
-      const item = { id: uid(), ...parsed, app: meta.app || null, receivedAt: new Date().toISOString() }
+      const item = { id: uid(), ...parsed, app: meta.app || null, receivedAt: new Date(meta.time || Date.now()).toISOString() }
       update((s) => {
         // de-dupe identical notifications (same raw text)
         if (s.inbox.some((i) => i.raw === item.raw) || s.txns.some((t) => t.raw === item.raw)) return {}
@@ -115,21 +117,22 @@ export function StoreProvider({ children }) {
   }), [update])
 
   // Native bridge: an Android wrapper (NotificationListenerService) can call
-  //   window.dispatchEvent(new CustomEvent('purrse:notification', { detail: { text, app } }))
-  // or window.PurrseBridge.push(text, app). Every bank/UPI notification is then parsed automatically.
+  //   window.dispatchEvent(new CustomEvent('montra:notification', { detail: { text, app } }))
+  // or window.MontraBridge.push(text, app). Every bank/UPI notification is then parsed automatically.
   useEffect(() => {
     if (!ready) return
     const onEvt = (e) => actions.ingestNotification(e.detail?.text, e.detail || {})
-    window.addEventListener('purrse:notification', onEvt)
-    window.PurrseBridge = { push: (text, app) => actions.ingestNotification(text, { app }) }
-    const queued = window.__purrseQueue || []
+    window.addEventListener('montra:notification', onEvt)
+    window.MontraBridge = { push: (text, app) => actions.ingestNotification(text, { app }) }
+    const queued = window.__montraQueue || []
     queued.forEach(([t, a]) => actions.ingestNotification(t, { app: a }))
-    window.__purrseQueue = []
-    return () => window.removeEventListener('purrse:notification', onEvt)
+    window.__montraQueue = []
+    const stopNative = startNotificationSync(actions.ingestNotification, setNotifAccess)
+    return () => { window.removeEventListener('montra:notification', onEvt); stopNative() }
   }, [ready, actions])
 
   if (!ready) return null
-  return <Ctx.Provider value={{ state, ...actions }}>{children}</Ctx.Provider>
+  return <Ctx.Provider value={{ state, ...actions, notifAccess, setNotifAccess, isNative }}>{children}</Ctx.Provider>
 }
 
 function toTxn(item) {

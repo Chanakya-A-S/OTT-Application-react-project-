@@ -33,7 +33,7 @@ export function ImportSheet({ text, onClose }) {
 
   return (
     <Sheet open={open} onClose={onClose} title="Import from notifications">
-      <p className="muted small">Paste bank SMS / UPI notifications (one per line), or share them to Purrse from Android. They’re read on-device.</p>
+      <p className="muted small">Paste bank SMS / UPI notifications (one per line), or share them to Montra from Android. They’re read on-device.</p>
       <textarea className="paste" rows={4} value={value} onChange={(e) => setValue(e.target.value)} placeholder="Rs.349.00 debited from A/c XX1234 to VPA swiggy@icici…" />
       <div className="row2">
         <motion.button whileTap={{ scale: 0.95 }} className="btn ghost" onClick={paste}><ClipboardPaste size={16} /> Paste</motion.button>

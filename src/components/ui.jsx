@@ -5,7 +5,19 @@ import { fmtDay, money, useCountUp } from '../utils.js'
 
 export function Logo({ size = 40 }) {
   // App mark (cat head with a rising bar chart) – rendered from public/icon-512.png
-  return <img src="/icon-512.png" width={size} height={size} alt="Purrse" className="logo" style={{ borderRadius: size * 0.28 }} />
+  return <img src="/icon-512.png" width={size} height={size} alt="Montra" className="logo" style={{ borderRadius: size * 0.28 }} />
+}
+
+export function Avatar({ profile, size = 46, className = '' }) {
+  return (
+    <span className={`avatar ${className}`} style={{ width: size, height: size, fontSize: size * 0.4 }}>
+      <AnimatePresence mode="wait">
+        {profile?.photo
+          ? <motion.img key={profile.photo.slice(-20)} src={profile.photo} alt="" initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} />
+          : <motion.span key="i" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{(profile?.name || 'F')[0].toUpperCase()}</motion.span>}
+      </AnimatePresence>
+    </span>
+  )
 }
 
 export function Money({ value, className, dec }) {

@@ -1,5 +1,5 @@
 // Minimal offline cache: network-first for pages, cache-first for built assets.
-const CACHE = 'purrse-v1'
+const CACHE = 'montra-v1'
 self.addEventListener('install', (e) => self.skipWaiting())
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()))
 self.addEventListener('fetch', (e) => {

@@ -68,7 +68,7 @@ function parseMerchant(text) {
   return null
 }
 
-export function parseNotification(raw) {
+export function parseNotification(raw, fallbackDate) {
   const text = String(raw || '').replace(/\s+/g, ' ').trim()
   if (!text || SKIP_RE.test(text)) return null
   const am = text.match(AMOUNT_RE) || text.match(AMOUNT_AFTER_RE)
@@ -91,7 +91,7 @@ export function parseNotification(raw) {
     amount,
     merchant,
     category: guessCategory(`${merchant} ${text}`, type),
-    date: (parseDate(text) || new Date()).toISOString(),
+    date: (parseDate(text) || (fallbackDate ? new Date(fallbackDate) : new Date())).toISOString(),
     account,
     bank: bankName,
     raw: text,
