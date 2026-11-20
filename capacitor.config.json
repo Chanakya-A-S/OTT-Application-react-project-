@@ -1,5 +1,5 @@
 {
-  "appId": "com.montra.app",
+  "appId": "in.montra.finance.tracker",
   "appName": "Montra",
   "webDir": "dist",
   "android": { "backgroundColor": "#0e100b" }
